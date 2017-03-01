@@ -101,15 +101,13 @@ void lepton_sync(void)
 
   PORTB |= 1 << 2;
   delay(185);
-  while (data & 0x0f == 0x0f)
-{
-  PORTB &= ~(1 << 2);
+  while (data & 0x0f == 0x0f) {
+    PORTB &= ~(1 << 2);
     data = SPI.transfer(0x00) << 8;
     data |= SPI.transfer(0x00);
     PORTB |= 1 << 2;
 
-    for (i = 0; i < ((VOSPI_FRAME_SIZE - 2) / 2); i++)
-    {
+    for (i = 0; i < ((VOSPI_FRAME_SIZE - 2) / 2); i++) {
 
       PORTB &= ~(1 << 2);
 
@@ -122,16 +120,14 @@ void lepton_sync(void)
 
 }
 
-void print_lepton_frame(void)
-{
-  int i;
-  for (i = 0; i < (VOSPI_FRAME_SIZE); i++)
-  {
+// Not for readability, rather for parseability.
+void print_lepton_frame(void) {
+  Serial.print("S");
+  for (int i = 0; i < (VOSPI_FRAME_SIZE); i++) {
     Serial.print(lepton_frame_packet[i], HEX);
     Serial.print(",");
-
   }
-  Serial.println(" ");
+  Serial.print("E");
 }
 
 void print_image(void)
@@ -146,8 +142,8 @@ void print_image(void)
   Serial.println(" ");
 }
 
-void lepton_command(unsigned int moduleID, unsigned int commandID, unsigned int command)
-{
+void lepton_command(unsigned int moduleID, unsigned int commandID,
+                    unsigned int command)c{
   byte error;
   Wire.beginTransmission(ADDRESS);
 
@@ -173,8 +169,7 @@ void lepton_command(unsigned int moduleID, unsigned int commandID, unsigned int 
   }
 }
 
-void agc_enable()
-{
+void agc_enable() {
   byte error;
   Wire.beginTransmission(ADDRESS); // transmit to device #4
   Wire.write(0x01);
@@ -183,8 +178,7 @@ void agc_enable()
   Wire.write(0x01);
 
   error = Wire.endTransmission();    // stop transmitting
-  if (error != 0)
-  {
+  if (error) {
     Serial.print("error=");
     Serial.println(error);
   }
@@ -198,8 +192,7 @@ void set_reg(unsigned int reg)
   Wire.write(reg & 0xff);            // sends one byte
 
   error = Wire.endTransmission();    // stop transmitting
-  if (error != 0)
-  {
+  if (error) {
     Serial.print("error=");
     Serial.println(error);
   }
@@ -318,15 +311,14 @@ void loop()
   {
     //lepton_sync();
     read_lepton_frame();
-    //if(lepton_frame_packet[i]&0x0f != 0x0f )
-    {
-      //print_lepton_frame();
+    /*
+    if(lepton_frame_packet[i]&0x0f != 0x0f ) {
+      print_lepton_frame();
     }
-
+    */
   }
-
-
 
   x++;
   delay(10000);
 }
+
